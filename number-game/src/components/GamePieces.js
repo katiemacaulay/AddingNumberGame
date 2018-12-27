@@ -72,47 +72,21 @@ class App extends Component {
     } else if(level === '2'){
       return Math.floor(Math.random() * 199 + 1)
     } else if(level === '3'){
-      return Math.floor(Math.random() * 19 + 1) 
+      return Math.floor(Math.random() * 99 + 1) 
     }
   }
   randomizeButtoncolors(){
     return Math.floor(Math.random() * 6)
   }
   randomizeStartTotal(level){
-    let boxes = [0]
     if(level === '1'){
-      const randomizedNum = this.randomizeNumbers(2500 + 2500)
-      if(this.checkForDupes(randomizedNum, boxes) === 0){
-        boxes.push(randomizedNum)
-        return randomizedNum
-      } else {
-        console.log('the else was caught')
-      }
+      return Math.floor(Math.random() * 2500 + 2500)
     } else if(level === '2'){
-      const randomizedNum = this.randomizeNumbers(1000 + 1000)
-      if(this.checkForDupes(randomizedNum, boxes) === 0){
-        boxes.push(randomizedNum)
-        return randomizedNum
-      } else {
-        console.log('the else was caught')
-      }
+      return Math.floor(Math.random() * 1000 + 1000)
     } else if(level === '3'){
-      const randomizedNum = this.randomizeNumbers(75 + 50)
-        if(this.checkForDupes(randomizedNum, boxes) === 0){
-          boxes.push(randomizedNum)
-          return randomizedNum
-        } else {
-          console.log('the else was caught')
-        }
+      return Math.floor(Math.random() * 500 + 500) 
     }
   }
-  randomizeNumbers(num){
-    return Math.floor(Math.random() * num)
-  }
-  checkForDupes(num, arr){
-    return arr.filter(item => item == num).length === 1
-  }
-
   getNewNumbers(difficultyLevel){
     const boxes = []
     for (let index = 0; index < difficultyLevel; index++) {
@@ -126,27 +100,15 @@ class App extends Component {
 
   returnNumberBoxes(){
     const listItems = this.state.boxes.map((item) => {
-      if(this.state.level === '3'){
-        return <div key={item.value}>
-          <Button className='button' 
-            style={{background: item.color,
-            height: item.value + 'px'}} 
-            disabled={this.state.buttonStatus}
-            onClick={() => this.addToTotal(item.value)}>
-            {item.value}
-          </Button>
-        </div>
-      } else {
-        return <div key={item.value}>
-          <Button className='button' 
-            style={{background: item.color,
-            height: item.value + 'px'}} 
-            disabled={this.state.buttonStatus}
-            onClick={() => this.addToTotal(item.value)}>
-            {item.value}
-          </Button>
-        </div>
-      }
+      return <div key={item.value}>
+        <Button className='button' 
+          style={{background: item.color,
+          height: item.value + 'px'}} 
+          disabled={this.state.buttonStatus}
+          onClick={() => this.addToTotal(item.value)}>
+          {item.value}
+        </Button>
+      </div>
     });
     return listItems
   }
@@ -156,7 +118,7 @@ class App extends Component {
 
   addNumberBox(){
     const newBox = {
-      value: this.randomizeBoxTotals(this.state.level),
+      value: this.randomizeBoxTotals(),
       color: this.state.buttonBrightColors[this.randomizeButtoncolors()]
     }
     this.setState({boxes: [...this.state.boxes, newBox],
@@ -170,36 +132,30 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.boxes)
+    console.log(this.state.level)
     return (
       <div>
-        <AppBar>
           <Toolbar>
+            <div>Get to this {this.state.startTotal} and don't go over!</div>
             <div class='pl4'> Start a New Game! 
             <Button
             onClick={() => this.getNewNumbers(this.state.difficultyLevel)}>
             New Game</Button>
             </div>
           </Toolbar>
-        </AppBar>
-        <div className='gamePlay'>
-          <LevelButton informParent={(e) => this.handleLevel(e)}/>
-          <RadioButton informParent={(e) => this.handleDifficulty(e)}/>
-            <ul>
-              <li> goal: {this.state.startTotal} </li>
-              <li> total: {this.state.total} </li>
-              <li> turn: {this.state.counter} </li>
-              <li> {this.state.winmsg} </li>
-              <Button onClick={() => this.addNumberBox()}>Get another number</Button>
-            </ul>
-        </div>
+        <Button onClick={() => this.addNumberBox()}>Get another number</Button>
+        <RadioButton informParent={(e) => this.handleDifficulty(e)}/>
+        <LevelButton informParent={(e) => this.handleLevel(e)}/>
+        <div> turn: {this.state.counter} </div>
+        <div> {this.state.total} </div>
+        <div> {this.state.winmsg} </div>
         <StackGrid columnWidth={150}>
           {this.returnNumberBoxes()}
         </StackGrid>
         <div>
-          {/* <ul>
+          <ul>
             {this.renderSavedData()}
-          </ul> */}
+          </ul>
         </div>
       </div>
     );
