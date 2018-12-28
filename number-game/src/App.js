@@ -65,63 +65,56 @@ class App extends Component {
       }
     }
   }
-
-  randomizeBoxTotals(level){
-    if(level === '1'){
-      return Math.floor(Math.random() * 399 + 1)
-    } else if(level === '2'){
-      return Math.floor(Math.random() * 199 + 1)
-    } else if(level === '3'){
-      return Math.floor(Math.random() * 19 + 1) 
+  getRandomNumber(max) {
+    const randomNumber = Math.floor(Math.random() * max)
+    const same = this.boxes.filter(x => x.value === randomNumber)
+    if (same.length > 0) {
+      return this.getRandomNumber(max)
     }
+    return randomNumber
+  }
+  getMaxNumberByLevel(level) {
+    const foo = {
+      '1': 400,
+      '2': 200,
+      '3': 20,
+    }
+    return foo[level]
+  }
+  randomizeBoxTotals(level){
+    let number = this.getMaxNumberByLevel(level)
+    return this.getRandomNumber(number)
   }
   randomizeButtoncolors(){
     return Math.floor(Math.random() * 6)
   }
   randomizeStartTotal(level){
-    let boxes = [0]
     if(level === '1'){
-      const randomizedNum = this.randomizeNumbers(2500 + 2500)
-      if(this.checkForDupes(randomizedNum, boxes) === 0){
-        boxes.push(randomizedNum)
-        return randomizedNum
-      } else {
-        console.log('the else was caught')
-      }
+      return this.random(2500 + 2500)
     } else if(level === '2'){
-      const randomizedNum = this.randomizeNumbers(1000 + 1000)
-      if(this.checkForDupes(randomizedNum, boxes) === 0){
-        boxes.push(randomizedNum)
-        return randomizedNum
-      } else {
-        console.log('the else was caught')
-      }
+      return this.random(1000 + 1000)
     } else if(level === '3'){
-      const randomizedNum = this.randomizeNumbers(75 + 50)
-        if(this.checkForDupes(randomizedNum, boxes) === 0){
-          boxes.push(randomizedNum)
-          return randomizedNum
-        } else {
-          console.log('the else was caught')
-        }
+      return this.random(75 + 50)
     }
   }
-  randomizeNumbers(num){
+  random(num){
     return Math.floor(Math.random() * num)
   }
-  checkForDupes(num, arr){
-    return arr.filter(item => item == num).length === 1
-  }
-
   getNewNumbers(difficultyLevel){
-    const boxes = []
+    this.boxes = []
     for (let index = 0; index < difficultyLevel; index++) {
-      boxes.push({
-        value: this.randomizeBoxTotals(this.state.level),
-        color: this.state.buttonBrightColors[this.randomizeButtoncolors()]
-      })
+      const value = this.randomizeBoxTotals(this.state.level)
+      const color = this.state.buttonBrightColors[this.randomizeButtoncolors()]
+      this.boxes.push({value, color})
     }
-    this.setState({boxes, buttonStatus: false, winmsg: 'ready to play?', counter: 0, startTotal: this.randomizeStartTotal(this.state.level), total: 0})
+    console.log(this.boxes)
+    this.setState({
+      boxes: this.boxes,
+      buttonStatus: false,
+      winmsg: 'ready to play?',
+      counter: 0, 
+      startTotal: this.randomizeStartTotal(this.state.level), total: 0
+    })
   }
 
   returnNumberBoxes(){
@@ -155,11 +148,16 @@ class App extends Component {
   }
 
   addNumberBox(){
+    let max = this.getMaxNumberByLevel(this.state.level)
+    if (this.boxes.length == max) {
+      return
+    }
     const newBox = {
       value: this.randomizeBoxTotals(this.state.level),
       color: this.state.buttonBrightColors[this.randomizeButtoncolors()]
     }
-    this.setState({boxes: [...this.state.boxes, newBox],
+    this.boxes = [...this.boxes, newBox]
+    this.setState({boxes: this.boxes,
       counter: (this.state.counter + 1)})
   }
   handleDifficulty(difficultyLevel) {
@@ -175,7 +173,7 @@ class App extends Component {
       <div>
         <AppBar>
           <Toolbar>
-            <div class='pl4'> Start a New Game! 
+            <div className='pl4'> Start a New Game! 
             <Button
             onClick={() => this.getNewNumbers(this.state.difficultyLevel)}>
             New Game</Button>

@@ -46,20 +46,20 @@ class RadioButtonsGroup extends React.Component {
             style={{flexDirection: 'row'}}
           >
             <FormControlLabel
-              value="18"
-              label="15-18 Tiles"
+              value="16"
+              label="16 Tiles"
               control={<Radio color="primary" />}
               labelPlacement="end"
             />
             <FormControlLabel
               value="12"
-              label="10-12 Tiles"
+              label="12 Tiles"
               control={<Radio color="primary" />}
               labelPlacement="end"
             />
             <FormControlLabel
               value="6"
-              label="4-6 Tiles"
+              label="6 Tiles"
               control={<Radio color="primary" />}
               labelPlacement="end"
             />
