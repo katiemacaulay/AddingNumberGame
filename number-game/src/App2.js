@@ -98,7 +98,7 @@ class App extends Component {
   }
   checkForDupes(num){
     let boxNumbersArray = this.state.boxes
-    return boxNumbersArray.filter(item => item == num).length === 1)
+    return boxNumbersArray.filter(item => item == num).length === 1
   }
 
   getNewNumbers(difficultyLevel){
